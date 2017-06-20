@@ -8,7 +8,7 @@ Created on Mon Jan 30 23:05:48 2017
 This is a simple content-based recommender system. We take into account author, publisher and year of publication of the books to buil item and user profile. The input is a text file containing just ISBN, one per line. The program calculate the cosine similarity between the user vector and item vector. Actually we don't build the item and user vectors, instead we exploit the fact that in the dot product only the features that are present both in the user vector and in the item one come into play, so we can just check for equality of each feature in the book database and rearrange the operations of dot product in this way. Because each item vector is boolean and has just three nonzero component, it is also unnecessary to divide by the product of the norms (it's the same for all vectors)  
 """
 
-#%%
+
 import pandas as pd
 import numpy as np
 
