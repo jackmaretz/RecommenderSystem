@@ -17,6 +17,7 @@ the closest users, sorted in descending order
 #%%
 import pandas as pd
 import numpy as np
+import json
 
 #%%
 # Read all three datasets with the correct encoding
@@ -40,6 +41,10 @@ for ratingEntry in ratings.index:
     User_ID, ISBN, Book_Rating = ratings.loc[ratingEntry, :]
     # Some ISBN that are in ratings are not present in books. This code 
     # skips them
+    # Converting this value to a string to make writing the dictionary into a 
+    # json file possible
+    User_ID = str(User_ID)
+    Book_Rating = str(Book_Rating)
     try:
         Book_Title = books.loc[ISBN, "Book-Title"]
         if not User_ID in usersRatingsDict:
@@ -50,6 +55,10 @@ for ratingEntry in ratings.index:
             usersRatingsDict[User_ID] = dict()
         usersRatingsDict[User_ID][ISBN] = Book_Rating
 #%%
+with open("usersRatingsDict.json", "w") as file:
+    json.dump(usersRatingsDict, file)
+
+#%%
 
 def manhattanDistance(user1, user2):
     """ Compute the manhattan distance between user1 and user2. UserX is a 
@@ -59,14 +68,14 @@ def manhattanDistance(user1, user2):
     for book in user1:
         if book in user2:
             check = 1
-            distance += abs(user1[book] - user2[book])
+            distance += abs(float(user1[book]) - float(user2[book]))
     if check == 0:
         distance = np.infty
     return distance
 
 def computeClosestUser(userOfInterest, allUsers):
     """ Returns a sorted list of tuples containing a user and its distance from
-    the userOfInterest. userOfInterest is just the User-ID """
+    the userOfInterest. userOfInterest is just the str(User-ID) """
     distances = []
     for user in allUsers:
         if user != userOfInterest:
