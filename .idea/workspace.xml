@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f5c0d87-47ba-4625-a817-10c2405df20b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/BX-Book-Ratings.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/BX-Books.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/BX-Users.csv" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adm_hw3.ipynb" afterPath="$PROJECT_DIR$/adm_hw3.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/books.csv" afterPath="$PROJECT_DIR$/books.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,7 +14,7 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="simple_content_based.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simple_content_based.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simple_content_based.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
@@ -41,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="adm_hw3.ipynb" pinned="false" current-in-tab="false">
+      <file leaf-file-name="adm_hw3.ipynb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/adm_hw3.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
-              <selected id="29" />
+              <selected id="28" />
             </state>
           </provider>
         </entry>
@@ -347,13 +343,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adm_hw3.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simple_content_based.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -363,6 +352,13 @@
             <element signature="e#47#914#1" expanded="false" />
             <element signature="e#917#936#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adm_hw3.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="29" />
         </state>
       </provider>
     </entry>
