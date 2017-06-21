@@ -1,0 +1,9 @@
+# Content based filtering
+# recommended based on the user's rating history
+# easy way: use mean of all rates
+
+# Collaborative filtering
+# based on other user's rating histories
+
+# Hybrid solution
+# combine approaches
