@@ -20,11 +20,15 @@ import pandas as pd
 #%%
 # Read all three datasets with the correct encoding
 ratings = pd.read_csv('ratings.csv', sep=';', encoding='latin1')
-books = pd.read_csv('books.csv', sep=';', encoding='latin1', error_bad_lines=False, warn_bad_lines=False, usecols = [0,1,2,3], index_col = 0)
+books = pd.read_csv('books.csv', sep=';', encoding='latin1',
+                    error_bad_lines=False, warn_bad_lines=False, usecols = [0,1,2,3], 
+                    index_col = 0) # removing the columns containing the links 
+                    #to the images and using the ISBN column as index
 users = pd.read_csv('users.csv', sep=';', encoding='latin1', error_bad_lines=False, warn_bad_lines=False)
+#%%
 
-# Drop zero ratings as they represent nothing really
-ratings.drop(ratings[ratings['Book-Rating'] < 1].index, inplace=True)
+## Drop zero ratings as they represent nothing really
+# ratings.drop(ratings[ratings['Book-Rating'] < 1].index, inplace=True)
 
 #%%
 
@@ -45,4 +49,7 @@ for ratingEntry in ratings.index:
             usersRatingsDict[User_ID] = dict()
         usersRatingsDict[User_ID][ISBN] = Book_Rating
     
-        
+# Calculate the number of users that gave no rating
+usersSet = set(users["User-ID"])
+ratingsSet = set(ratings["User-ID"])
+nonRatingUsers = len(usersSet.difference(ratingsSet))
