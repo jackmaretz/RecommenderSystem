@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1f5c0d87-47ba-4625-a817-10c2405df20b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Test.ipynb" afterPath="$PROJECT_DIR$/Test.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,16 +33,28 @@
         <entry file="file://$PROJECT_DIR$/Test.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
-              <selected id="1" />
+              <selected id="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="adm_hw3.ipynb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="adm_hw3.ipynb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adm_hw3.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
-              <selected id="28" />
+              <selected id="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="manfredi_offline.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/manfredi_offline.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="976">
+              <caret line="108" column="45" lean-forward="false" selection-start-line="108" selection-start-column="45" selection-end-line="108" selection-end-column="45" />
+              <folding>
+                <element signature="e#107#118#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -66,6 +79,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/manfredi_offline.py" />
         <option value="$PROJECT_DIR$/Test.ipynb" />
       </list>
     </option>
@@ -297,7 +311,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3849315" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1630137" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -336,13 +350,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Test.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simple_content_based.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -355,10 +362,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-112">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/adm_hw3.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
-          <selected id="29" />
+          <selected id="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Test.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manfredi_offline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="976">
+          <caret line="108" column="45" lean-forward="false" selection-start-line="108" selection-start-column="45" selection-end-line="108" selection-end-column="45" />
+          <folding>
+            <element signature="e#107#118#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
