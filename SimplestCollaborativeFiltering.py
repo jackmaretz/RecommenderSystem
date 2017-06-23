@@ -56,7 +56,7 @@ for ratingEntry in ratings.index:
         usersRatingsDict[User_ID][ISBN] = Book_Rating
 #%%
 with open("usersRatingsDict.json", "w") as file:
-    json.dump(usersRatingsDict, file)
+    json.dump(usersRatingsDict, file, indent = 4)
 
 #%%
 
