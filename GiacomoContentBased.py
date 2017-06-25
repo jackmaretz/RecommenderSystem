@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import itertools
 
-
+#%%
 #loading dataframe
 books= pd.read_csv('books.csv',delimiter=';',encoding='latin1',error_bad_lines=False, warn_bad_lines=False,low_memory=False) #load books file, dropping bad rows;
 
@@ -16,21 +16,23 @@ column_to_delete=list(books.columns.values)[5:8]
 books= books.drop(labels=column_to_delete, axis=1) # axis 1 drops columns, 0 will drop rows that match index value in labels
 #print(books.iloc[128880:128899,:])
 
-
+#%%
 
 #dictionary
 dict = {}
 i=1
 start = time.time()
 
-# for id, book in books.iterrows():
-#
-#     #print(i)
-#     isbn, title, author, year, publisher = book
-#     publisher = "" if type(publisher) == float else publisher
-#     pub=nltk.word_tokenize(publisher)
-#     dict[isbn]= {'Title': nltk.word_tokenize(title), 'Author' : nltk.word_tokenize(author),'Year' : nltk.word_tokenize(year), 'Publisher': pub}
-#     i=i+1
+for id, book in books.iterrows():
+
+     #print(i)
+     isbn, title, author, year, publisher = book
+     publisher = "" if type(publisher) == float else publisher
+     pub=nltk.word_tokenize(publisher)
+     dict[isbn]= {'Title': nltk.word_tokenize(title), 'Author' : nltk.word_tokenize(author),'Year' : nltk.word_tokenize(year), 'Publisher': pub}
+     i=i+1
+
+#%%     
 description=[]
 id=[]
 i=0
@@ -43,7 +45,11 @@ for ident, book in books.iterrows():
     id.append(isbn)
 
     i=i+1
+    
+# each user has a vector with all books read(title, author etc)
 
+
+#%%
 # for id, book in books.iterrows():
 #     isbn, title, author, year, publisher = book
 #     ISBN.append(isbn)
@@ -68,7 +74,12 @@ print(d.head())
 d.set_index('id', inplace=True)
 
 print(d.head())
+x=0
+for row in d:
+    print(row)
+    x=x+1
 
+#%%
 
 #1.tokenize words in dictionary
 #2.stemm them
@@ -88,22 +99,22 @@ print(d.head())
         Similarities and their scores are stored in redis as a Sorted Set, with one set for each item.
         :param ds: A pandas dataset containing two fields: description & id
         :return: Nothin!
-        """
-
-ds=d
-tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 3), min_df=0, stop_words='english')
-tfidf_matrix = tf.fit_transform(ds[''])
-
-cosine_similarities = linear_kernel(tfidf_matrix, tfidf_matrix)
-
-for idx, row in ds.iterrows():
-    similar_indices = cosine_similarities[idx].argsort()[:-100:-1]
-    similar_items = [(cosine_similarities[idx][i], ds['id'][i]) for i in similar_indices]
-
-    # First item is the item itself, so remove it.
-    # This 'sum' is turns a list of tuples into a single tuple: [(1,2), (3,4)] -> (1,2,3,4)
-    flattened = sum(similar_items[1:], ())
-    #self._r.zadd(self.SIMKEY % row['id'], *flattened)
-print(flattened)
-print(cosine_similarities)
-print(tfidf_matrix)
+#        """
+#
+#ds=d
+#tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 3), min_df=0, stop_words='english')
+#tfidf_matrix = tf.fit_transform(ds[''])
+#
+#cosine_similarities = linear_kernel(tfidf_matrix, tfidf_matrix)
+#
+#for idx, row in ds.iterrows():
+#    similar_indices = cosine_similarities[idx].argsort()[:-100:-1]
+#    similar_items = [(cosine_similarities[idx][i], ds['id'][i]) for i in similar_indices]
+#
+#    # First item is the item itself, so remove it.
+#    # This 'sum' is turns a list of tuples into a single tuple: [(1,2), (3,4)] -> (1,2,3,4)
+#    flattened = sum(similar_items[1:], ())
+#    #self._r.zadd(self.SIMKEY % row['id'], *flattened)
+#print(flattened)
+#print(cosine_similarities)
+#print(tfidf_matrix)
