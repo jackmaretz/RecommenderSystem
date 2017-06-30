@@ -61,18 +61,37 @@ class contentItemFiltering:
         field2Tok = self.nostop_tokenizer(field2)
         return self.jaccard(field1Tok,field2Tok)
         
-      
+    #go to dict user take user look books with higher ratings and print books not rated yet similar to the rated one
+    
+    def getOriginalData(self):
+        """ Set the data again to the original one. The centered info is put back to False """
+        self.ratings = self.originalRatings
+        self.centered = False
         
         
+    def similarityBooks(self,book1,book2):
+        sim = self.similarityTextFields(book1['title'],book2['title'])
+        for key in book1:
+            if key != 'title':
+                sim += int(book1[key]==book2[key])
+        return sim/4
+        
+    
+    def getSimilarBooks(self,book):
+        library=self.books
+        similarBooks = []
+        
+            
+        for item in library: #scorro isbn
+            similarity =  self.similarityBooks(book,library[item])
+            if similarity != 1:
+                similarBooks.append((item,similarity))
+        return sorted(similarBooks,key=lambda x: x[1])
+        
+    #def topBooks(self,user):
         
         
-        
-        
-        
-        
-        
-        
-
-
-        
+rec = contentItemFiltering(books,ratings)
+XSIM=rec.getSimilarBooks(rec.books['0000913154'])
+getSimilarBooks(self.book)
         
