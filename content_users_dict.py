@@ -1,5 +1,5 @@
 import pandas as pd
-
+import json
 
 ratings = pd.read_csv('BX-Book-Ratings.csv', sep=';', encoding='latin1')
 
@@ -24,3 +24,6 @@ for user in piv_dic:
 
         if not math.isnan(piv_dic[user][author]):
             piv_dic2[user][author] = piv_dic[user][author]
+
+with open("piv_dic2.json", "w") as file:
+    json.dump(file, indent = 4)
