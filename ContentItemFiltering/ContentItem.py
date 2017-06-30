@@ -92,6 +92,9 @@ class contentItemFiltering:
         
         
 rec = contentItemFiltering(books,ratings)
-XSIM=rec.getSimilarBooks(rec.books['0000913154'])
+import time
+start=time.time()
+XSIM=rec.getSimilarBooks(rec.books['0684829746'])
+print(time.time()-start)
 #getSimilarBooks(self.book)
         
