@@ -70,11 +70,11 @@ class contentItemFiltering:
         
         
     def similarityBooks(self,book1,book2):
-        sim = self.similarityTextFields(book1['title'],book2['title'])
-        for key in book1:
-            if key != 'title':
-                sim += int(book1[key]==book2[key])
-        return sim/4
+        sim = 0.3*self.similarityTextFields(book1['title'],book2['title'])
+        sim += 0.4*int(book1['author']==book2['author'])
+        sim += 0.1*int(book1['year']==book2['year'])
+        sim += 0.2*int(book1['publisher']==book2['publisher'])
+        return sim
         
     
     def getSimilarBooks(self,book):
@@ -93,5 +93,5 @@ class contentItemFiltering:
         
 rec = contentItemFiltering(books,ratings)
 XSIM=rec.getSimilarBooks(rec.books['0000913154'])
-getSimilarBooks(self.book)
+#getSimilarBooks(self.book)
         
