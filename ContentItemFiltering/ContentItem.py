@@ -11,6 +11,7 @@ Created on Fri Jun 30 12:55:59 2017
 import json
 import copy
 import nltk
+import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 
@@ -18,8 +19,8 @@ from nltk.tokenize import RegexpTokenizer
 # Preprocessing
 #pathPaolo = "/Users/paolograniero/GitHub/RecommenderSystem/CollaborativeFiltering/"
 
-path = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
-
+#pathGiacomo = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
+path = "/Users/livialombardi/documents/GitHub/RecommenderSystem/CollaborativeFiltering/"
 books = json.loads(open(path + "books_dict.json").read())
 ratings = json.loads(open(path + "ratings_dict.json").read())
 users = json.loads(open(path + "users_dict.json").read())
@@ -97,5 +98,4 @@ start=time.time()
 XSIM=rec.getSimilarBooks(rec.books['0684829746'])
 print(time.time()-start)
 #getSimilarBooks(self.book)
-
-users['1']
+        
