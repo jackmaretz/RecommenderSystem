@@ -9,9 +9,34 @@ Created on Fri Jun 23 16:49:58 2017
 #%%
 import codecs
 import json
+import requests
+import time
 
 path = "/Users/paolograniero/GitHub/RecommenderSystem/"
 
+def get_goog_description(isbn):
+    lapi_key = '&key=AIzaSyDOujjCI2UI6LqoL44wwPgXQpVOgJLPp2g' #api key;
+    base_url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' #endpoint;
+    description = ''
+
+    status_code = 0 #this is the status of the request;
+    tries = 0 #this is the number of times we tried requesting page;
+    while(status_code != 200 and tries < 5): #try requesting until ok response;     
+        try:
+            content = requests.get(base_url + isbn, timeout=10) #request page;
+            status_code = content.status_code #get status code of request;
+        except Exception as RequestError:
+            print(RequestError)
+            status_code = 502        
+        time.sleep(1) #wait for 1 second;
+        tries += 1 #increment tries;
+    if (status_code == 200): #response ok;
+        json_book = json.loads(content.text) #load returned json object;
+        try:
+            description = json_book['items'][0]['volumeInfo']['description'].lower() #try fetching the description from the json object;
+        except Exception as e:
+            pass
+    return description
 #%%
 """ Creating books dictionary. Each entry is a ISBN (a dictionary itself) that 
 contains title, author, year of publication and publisher"""
@@ -30,13 +55,16 @@ for line in book_file:
     author = fields[2].strip('"').replace("&amp", "")
     year = fields[3].strip('"')
     publisher = fields[4].strip('"').replace("&amp", "")
-    books[isbn] = {"title":title, 
+    # description = get_goog_description(isbn)
+    if isbn in isbnSet:
+        books[isbn] = {"title":title, 
          "author":author, 
          "year":year, 
-         "publisher":publisher}
+         "publisher":publisher} #,
+         #"description": description}
 book_file.close()
 
-with open("books_dict.json", "w") as file:
+with open("books_dict_cut.json", "w") as file:
     json.dump(books, file, indent = 4)
 
 #%%
@@ -98,9 +126,15 @@ that contains all the rated books with the rating"""
 rating_file = codecs.open(filename = path + "ratings.csv", mode = "r", encoding = "latin1")
 
 ratings = dict()
-
+isbnSet = []
+user_idSet = []
 next(rating_file)
+i = 1
 for line in rating_file:
+    
+    if i > 100:
+        break
+    
     # separating line into fields
     line = line.replace("\r\n", "")
     fields = line.strip('"').split(";")
@@ -110,6 +144,9 @@ for line in rating_file:
     rating = fields[2].strip('"')
     
     if int(rating) > 0:
+        i += 1
+        isbnSet.append(isbn)
+        user_idSet.append(user_id)
         if not user_id in ratings:
             ratings[user_id] = dict()
         
@@ -120,7 +157,12 @@ for line in rating_file:
             ratings[user_id][isbn] = rating        
     
     
-rating_file.close()
     
-with open("ratings_dict.json", "w") as file:
+    
+rating_file.close()
+print(len(isbnSet))
+isbnSet = set(isbnSet)
+print(len(isbnSet))
+user_idSet = set(user_idSet)
+with open("ratings_dict_cut.json", "w") as file:
     json.dump(ratings, file, indent = 4)

@@ -16,9 +16,10 @@ from nltk.tokenize import RegexpTokenizer
 
 #%%
 # Preprocessing
-#pathPaolo = "/Users/paolograniero/GitHub/RecommenderSystem/CollaborativeFiltering/"
-
-path = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
+# Path Paolo
+path = "/Users/paolograniero/GitHub/RecommenderSystem/CollaborativeFiltering/"
+# Path Giacomo
+# path = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
 
 books = json.loads(open(path + "books_dict.json").read())
 ratings = json.loads(open(path + "ratings_dict.json").read())

@@ -23,6 +23,7 @@ class collaborativeUserBased:
     def __init__(self, ratingsData):        # Initialize class
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
+    
         
     def cosineSimilarity(self, user1, user2):
         """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]
@@ -34,16 +35,16 @@ class collaborativeUserBased:
         
         for key in user1:
             
-            x = user1[key]
+            x = float(user1[key])
             sumx2 += x**2
             
-            if key in self.data[user2]:
+            if key in user2:
                 
-                y = user2[key]
+                y = float(user2[key])
                 sumxy += x*y
                 
         for key in user2:
-            y = user2[key]
+            y = float(user2[key])
             sumy2 += y**2
         
         similarity = sumxy/(sqrt(sumx2)*sqrt(sumy2))
@@ -57,11 +58,11 @@ class collaborativeUserBased:
         sims = []               # Initialize list of similarities
         for user in self.data:
             if user != user_id:
-                similarity = cosineSimilarity(self.data[user_id], 
+                similarity = self.cosineSimilarity(self.data[user_id], 
                                               self.data[user])
                 sims.append((user, similarity))
         
-        sims.sort(key = lambda simTuple: simtuple[1], reverse = True)
+        sims.sort(key = lambda simTuple: simTuple[1], reverse = True)
         
         return sims[:k]
     
@@ -88,6 +89,10 @@ class collaborativeUserBased:
 
     def initializeCV(self, n_folds = 5):
         """ Create the test-sets lists to be used when performing the CV. it also  """
+        if not n_folds in np.arange(5,10):
+            print("Select a number of folds between 5 and 10")
+            return
+        self.n = n_folds
         self.readyForTrain = dict()
         self.testSet = dict()
         
@@ -122,4 +127,128 @@ class collaborativeUserBased:
         predicted_rating) based on k_nearest neighbors according to 
         cosine similarity """
         
-                  
+        #Initialize recommendations
+        recommendations = dict()
+        
+        # Get user ratings
+        userRatings = self.data[user]
+        
+        # Get nearest users
+        nearest = self.k_nearest(user, k = k_nearest)
+        
+        # Compute normalizing factor for weights
+        
+        normalize = 1e-12
+        for nearUser in nearest:
+            normalize += nearUser[1]
+            
+        # Iterate through all nearest users accumulating weighted 
+        # ratings
+        for nearUser in nearest:
+            # Compute wegìight
+            weight = nearUser[1]/normalize
+            
+            # Get Username
+            username = nearUser[0]
+            
+            # Get dictionary of ratings for this user
+            neighborRatings = self.data[username]
+            
+            # Find books rated by nearest users that user didn't
+            
+            for book in neighborRatings:
+                if not book in userRatings:
+                    
+                    if not book in recommendations:
+                        recommendations[book] = round(weight * float(neighborRatings[book]), 2)
+                    
+                    else:
+                        recommendations[book] += round(weight * float(neighborRatings[book]), 2)
+        
+        # Convert recommendations to a list to be sorted
+        recommendations = list(recommendations.items())
+        
+        # Sort recommendations
+        recommendations.sort(key = lambda titleRating: titleRating[1], reverse = True)
+        
+        # Return the first n_recommendations
+        return recommendations[:n_recommendations]
+                    
+                
+    def CV(self, k_nearest, n_recommendations, max_users):
+        """ Perform n_folds CV, returning a score that represent the average percentage of successfull recommendations """
+        scoreCV = []
+        self.backup = copy.deepcopy(self.data)
+        # Loop through CV rounds
+        for i in np.arange(0, self.n):
+            # Create test set
+            test = dict()
+            train = dict()
+            
+            j = 0
+        
+            # Build train and test set
+            for user in self.testSet:
+                if j > max_users:
+                    break
+                
+                test[user] = self.testSet[user][i]
+                bookTestList = [book for (book, rating) in test[user]]
+                train[user] = dict()
+                
+                for book in self.readyForTrain[user]:
+                    if not book in bookTestList:
+                        train[user][book] = self.readyForTrain[user][book]
+                j += 1
+                
+            self.data = copy.deepcopy(train)
+            
+            # Scoring
+            singleScores = []
+            j = len(self.data)
+            z = 0
+            for user in self.data:
+                recommendations = self.recommend(user, k_nearest, n_recommendations)
+                recommendations = [book for (book, rating) in recommendations]
+                
+                bookTestList = [book for (book, rating) in test[user]]
+                score = 0
+                for book in recommendations:
+                    if book in bookTestList:
+                        score = 1
+                        break
+                
+                #score = score / min(n_recommendations, len(bookTestList))
+                singleScores.append(score)
+                
+                #print(i, j-z, "\r", end = "")
+                z += 1
+            scoreCV.append(np.mean(singleScores))
+        
+        self.data = self.backup
+        return np.mean(scoreCV)
+            
+        
+        
+        
+        
+rec = collaborativeUserBased(ratings)
+rec.initializeCV()
+
+users = [100, 200, 400, 800, 1600]
+K = [3, 5, 10]
+N = [5, 10, 20]
+scores = np.zeros((len(users), len(K), len(N)))
+
+l = 0 
+for u in users:
+    m = 0
+    for k in K:
+        j = 0
+        for n in N:
+            scores[l][m][j] = rec.CV(k, n, u)
+            print("Users:", u, "Nearest neighbors:", k, "# of recommendations:", n)
+            j += 1
+        m += 1
+    l += 1
+#rec.recommend('10')
