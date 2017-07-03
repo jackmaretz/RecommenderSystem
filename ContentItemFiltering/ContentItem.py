@@ -19,8 +19,8 @@ from nltk.tokenize import RegexpTokenizer
 # Preprocessing
 #pathPaolo = "/Users/paolograniero/GitHub/RecommenderSystem/CollaborativeFiltering/"
 
-#pathGiacomo = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
-path = "/Users/livialombardi/documents/GitHub/RecommenderSystem/CollaborativeFiltering/"
+path = "/Users/Giacomo/Google Drive/Data Science/ADM/RecommenderSystem/CollaborativeFiltering/"
+#pathLivia = "/Users/livialombardi/documents/GitHub/RecommenderSystem/CollaborativeFiltering/"
 books = json.loads(open(path + "books_dict.json").read())
 ratings = json.loads(open(path + "ratings_dict.json").read())
 users = json.loads(open(path + "users_dict.json").read())
@@ -91,7 +91,7 @@ class contentItemFiltering:
         
     #def topBooks(self,user):
         
-        
+ #%%       
 rec = contentItemFiltering(books,ratings)
 import time
 start=time.time()
@@ -99,3 +99,24 @@ XSIM=rec.getSimilarBooks(rec.books['0684829746'])
 print(time.time()-start)
 #getSimilarBooks(self.book)
         
+#%%
+    def getMaxRankBooks(self,ratings):
+        maxRankBooks ={}
+        for users in ratings:  
+            #print("### User number    :" , users)
+            for item in ratings[users]:
+                #print("# book    :",item)#libri
+                if int(ratings[users][item])>=5:
+                    if users not in maxRankBooks:
+                        maxRankBooks[users] = {}
+                    maxRankBooks[users][item]  = ratings[users][item]
+        return maxRankBooks
+    
+    def simmatric(self,maxRankBooks,users):
+        for book in maxRankBooks[users]:
+            XSIM=getSimilarBooks(books[book])
+            #pick every user in maxrank and do a recommend
+            #write func to recommend
+            #pock top 10 xsim books for each book read for this users
+            
+
