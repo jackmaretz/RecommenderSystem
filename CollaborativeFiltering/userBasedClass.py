@@ -24,10 +24,19 @@ class collaborativeUserBased:
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
     
+################################################################################        
+    
+    def cosineSimilarity(self, user1_id, user2_id, data):
+        """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
         
-    def cosineSimilarity(self, user1, user2):
-        """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]
-        userX is a dictionary of the form {title:rating}"""
+        # Check whether similarity already computed
+        if user1_id == user2_id:
+            similarity = 0
+            return similarity
+        
+            
+        user1 = data[user1_id]
+        user2 = data[user2_id]
         
         sumxy = 0           # Initialize the 3 terms involved in the formula
         sumx2 = 0
@@ -50,22 +59,41 @@ class collaborativeUserBased:
         similarity = sumxy/(sqrt(sumx2)*sqrt(sumy2))
         
         return similarity
+ 
+###############################################################################
     
-    def k_nearest(self, user_id, k = 3):
+    def k_nearest(self, user_id, data, k = 3):
         """ Returns a list of users based on their similarity to user_id
         the elements of the list are tuples (similarity, user)"""
         
         sims = []               # Initialize list of similarities
-        for user in self.data:
+        for user in data:
             if user != user_id:
-                similarity = self.cosineSimilarity(self.data[user_id], 
-                                              self.data[user])
+                similarity = self.cosineSimilarity(user_id, 
+                                              user)
                 sims.append((user, similarity))
         
         sims.sort(key = lambda simTuple: simTuple[1], reverse = True)
         
         return sims[:k]
-    
+ 
+##############################################################################
+
+    def similarityData(self, data, name):
+        """ Create a dictionary of similarities and save it as a json file"""
+        
+        simDictionary = dict()
+        
+        for user1 in data:
+            simDictionary[user1] = dict()
+            for user2 in data:
+                simDictionary[user1][user2] = str(self.cosineSimilarity(user1, user2, data))
+        
+        filename = name + ".json"
+        with open(filename, "w") as file:
+            json.dump(simDictionary, file, indent= 4)
+            
+
     def centerRatings(self):
         """ Center all the users' ratings (subtract the mean rating from 
         each one. The centered info is put to True """
@@ -235,7 +263,7 @@ class collaborativeUserBased:
 rec = collaborativeUserBased(ratings)
 rec.initializeCV()
 
-users = [100, 200, 400, 800, 1600]
+users = [100, 200, 400]
 K = [3, 5, 10]
 N = [5, 10, 20]
 scores = np.zeros((len(users), len(K), len(N)))
