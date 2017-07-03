@@ -24,7 +24,7 @@ class collaborativeUserBased:
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
     
-################################################################################        
+###############################################################################
     
     def cosineSimilarity(self, user1_id, user2_id, data):
         """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
@@ -84,15 +84,39 @@ class collaborativeUserBased:
         
         simDictionary = dict()
         
+        i = 0
         for user1 in data:
             simDictionary[user1] = dict()
+            j = 0
             for user2 in data:
-                simDictionary[user1][user2] = str(self.cosineSimilarity(user1, user2, data))
+                print(i,j)
+                try:
+                    check = simDictionary[user2][user1]
+                except:
+                    simDictionary[user1][user2] = str(self.cosineSimilarity(user1, user2, data))
+                j += 1
+            i += 1
+        
         
         filename = name + ".json"
         with open(filename, "w") as file:
             json.dump(simDictionary, file, indent= 4)
-            
+    
+
+    def createTrainSet(self, completeTrain, testSet, idx):
+        trainSet = dict()
+        
+        for user in completeTrain:
+            trainSet[user] = dict()
+            testBooks = [book for (book, rating) in testSet[user][idx]]
+            for book in completeTrain[user]:
+                if not book in testBooks:
+                    trainSet[user][book] = completeTrain[user][book]
+        
+        return trainSet
+                    
+                
+        
 
     def centerRatings(self):
         """ Center all the users' ratings (subtract the mean rating from 
@@ -259,9 +283,10 @@ class collaborativeUserBased:
         
         
         
-        
+    
 rec = collaborativeUserBased(ratings)
 rec.initializeCV()
+#%%
 
 users = [100, 200, 400]
 K = [3, 5, 10]
