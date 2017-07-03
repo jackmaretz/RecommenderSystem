@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jun 30 20:23:57 2017
+
+@author: Giacomo
+"""
+maxRankBooks ={}
+for users in ratings:  
+    #print("### User number    :" , users)
+    for item in ratings[users]:
+        #print("# book    :",item)#libri
+        if int(ratings[users][item])>=5:
+            if users not in maxRankBooks:
+                maxRankBooks[users] = {}
+            maxRankBooks[users][item]  = ratings[users][item]
+#==============================================================================
+#             print("### User number    :" , users)
+#             print("# book    :",item)#libri
+#             print("# and rated it    :",ratings[users][item]) #ratings
+#==============================================================================
+
