@@ -13,6 +13,9 @@ import copy
 from random import shuffle
 import matplotlib.pyplot as plt
 import time
+import random
+
+
 #%%
 # Importing rating dictionary
 ratings = json.loads(open("ratings_dict.json").read())
@@ -21,10 +24,12 @@ ratings = json.loads(open("ratings_dict.json").read())
 
 class collaborativeUserBased:
     
+    
     def __init__(self, ratingsData):        # Initialize class
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
-        
+        self.initialized = False
+        random.seed(42)
         
     
 ###############################################################################
@@ -174,6 +179,9 @@ class collaborativeUserBased:
 
     def initializeCV(self, n_folds = 5):
         """ Create the test-sets lists to be used when performing the CV. it also  """
+        if self.initialized == True:
+            return
+        
         if not n_folds in np.arange(5,10):
             print("Select a number of folds between 5 and 10")
             return
@@ -200,11 +208,15 @@ class collaborativeUserBased:
                             self.readyForTrain[user][book] = rating
                     
                     toTestSet = [(book, rating) for book, rating in zip(list(self.readyForTrain[user]), list(self.readyForTrain[user].values()))]
-                       
-                    shuffle(toTestSet)
+                    
+                    
+                    random.shuffle(toTestSet)
+                    
                     raw_testList = np.array_split(toTestSet, n_folds)
                     # Necessary elaboration because of the way np.array_split works on tuples        
                     self.testSet[user] = [[(book, rating) for book, rating in sublist] for sublist in raw_testList]
+        
+        self.initialized = True
         
 ###############################################################################
         
