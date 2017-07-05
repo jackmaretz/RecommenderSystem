@@ -23,16 +23,30 @@ class collaborativeUserBased:
     def __init__(self, ratingsData):        # Initialize class
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
+        
     
 ###############################################################################
     
-    def cosineSimilarity(self, user1_id, user2_id, data):
-        """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
+    def cosineSimilarity(self, user1_id, user2_id, data, cv = False):
+        """ returns cosine similarity between two users, x and y, according to 
+        formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
         
-        # Check whether similarity already computed
         if user1_id == user2_id:
             similarity = 0
             return similarity
+
+
+        """ When performing CrossValidation, looks inside the trainSimilarity 
+        dictionary, that contains all the similarities between users in the complete  
+        (all users considered) training set """
+        if cv == True:
+            try:
+                similarity = float(self.trainSimilarity[user1_id][user2_id])
+            except:
+                similarity = float(self.trainSimilarity[user2_id][user1_id])
+            return similarity
+                 
+            
         
             
         user1 = data[user1_id]
@@ -62,20 +76,29 @@ class collaborativeUserBased:
  
 ###############################################################################
     
-    def k_nearest(self, user_id, data, k = 3):
+    def k_nearest(self, user_id, data, cv = False, k = 3):
         """ Returns a list of users based on their similarity to user_id
         the elements of the list are tuples (similarity, user)"""
         
-        sims = []               # Initialize list of similarities
+        nearest = []               # Initialize list of similarities
         for user in data:
             if user != user_id:
                 similarity = self.cosineSimilarity(user_id, 
-                                              user)
-                sims.append((user, similarity))
+                                              user, data, cv)
+                if len(nearest) == k:
+                    simList = [sim for (user, sim) in nearest]
+                    minimum = min(simList)
+                   
+                    if similarity <= minimum:
+                        pass
+                    else:
+                        idx = simList.index(minimum)
+                        nearest[idx] = (user, similarity)
+                        
         
-        sims.sort(key = lambda simTuple: simTuple[1], reverse = True)
+        nearest.sort(key = lambda simTuple: simTuple[1], reverse = True)
         
-        return sims[:k]
+        return nearest
  
 ##############################################################################
 
@@ -101,7 +124,8 @@ class collaborativeUserBased:
         filename = name + ".json"
         with open(filename, "w") as file:
             json.dump(simDictionary, file, indent= 4)
-    
+
+###############################################################################    
 
     def createTrainSet(self, completeTrain, testSet, idx):
         trainSet = dict()
