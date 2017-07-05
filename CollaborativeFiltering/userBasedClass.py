@@ -12,6 +12,7 @@ import numpy as np
 import copy
 from random import shuffle
 import matplotlib.pyplot as plt
+import time
 #%%
 # Importing rating dictionary
 ratings = json.loads(open("ratings_dict.json").read())
@@ -23,16 +24,31 @@ class collaborativeUserBased:
     def __init__(self, ratingsData):        # Initialize class
         self.data = copy.deepcopy(ratingsData)
         self.centered = False
+        
+        
     
 ###############################################################################
     
-    def cosineSimilarity(self, user1_id, user2_id, data):
-        """ returns cosine similarity between two users, x and y, according to formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
+    def cosineSimilarity(self, user1_id, user2_id, data, cv = False):
+        """ returns cosine similarity between two users, x and y, according to 
+        formula cos(x,y) = sum_i(x_i*y_i)/[norm(x)*norm(y)]"""
         
-        # Check whether similarity already computed
         if user1_id == user2_id:
             similarity = 0
             return similarity
+
+
+        """ When performing CrossValidation, looks inside the trainSimilarity 
+        dictionary, that contains all the similarities between users in the complete  
+        (all users considered) training set """
+        if cv == True:
+            try:
+                similarity = float(self.trainSimilarity[user1_id][user2_id])
+            except:
+                similarity = float(self.trainSimilarity[user2_id][user1_id])
+            return similarity
+                 
+            
         
             
         user1 = data[user1_id]
@@ -62,20 +78,30 @@ class collaborativeUserBased:
  
 ###############################################################################
     
-    def k_nearest(self, user_id, data, k = 3):
+    def k_nearest(self, user_id, data, k = 3, cv = False):
         """ Returns a list of users based on their similarity to user_id
         the elements of the list are tuples (similarity, user)"""
         
-        sims = []               # Initialize list of similarities
+        nearest = []               # Initialize list of similarities
         for user in data:
             if user != user_id:
                 similarity = self.cosineSimilarity(user_id, 
-                                              user)
-                sims.append((user, similarity))
+                                              user, data, cv)
+                if len(nearest) == k:
+                    simList = [sim for (user, sim) in nearest]
+                    minimum = min(simList)
+                   
+                    if similarity <= minimum:
+                        pass
+                    else:
+                        idx = simList.index(minimum)
+                        nearest[idx] = (user, similarity)
+                else:
+                   nearest.append((user, similarity))     
         
-        sims.sort(key = lambda simTuple: simTuple[1], reverse = True)
+        nearest.sort(key = lambda simTuple: simTuple[1], reverse = True)
         
-        return sims[:k]
+        return nearest
  
 ##############################################################################
 
@@ -101,9 +127,13 @@ class collaborativeUserBased:
         filename = name + ".json"
         with open(filename, "w") as file:
             json.dump(simDictionary, file, indent= 4)
-    
+
+###############################################################################    
 
     def createTrainSet(self, completeTrain, testSet, idx):
+        """ Returns the training set corresponding to a given test set, as created 
+        with initializeCV() """
+        
         trainSet = dict()
         
         for user in completeTrain:
@@ -115,7 +145,7 @@ class collaborativeUserBased:
         
         return trainSet
                     
-                
+###############################################################################              
         
 
     def centerRatings(self):
@@ -132,12 +162,15 @@ class collaborativeUserBased:
         
         self.centered = True
         
+###############################################################################        
         
     def getOriginalData(self):
         """ Set the data again to the original one. The centered info is put 
         back to False """
         self.data = self.originalData
         self.centered = False
+
+###############################################################################
 
     def initializeCV(self, n_folds = 5):
         """ Create the test-sets lists to be used when performing the CV. it also  """
@@ -173,8 +206,9 @@ class collaborativeUserBased:
                     # Necessary elaboration because of the way np.array_split works on tuples        
                     self.testSet[user] = [[(book, rating) for book, rating in sublist] for sublist in raw_testList]
         
+###############################################################################
         
-    def recommend(self, user, k_nearest = 3, n_recommendations = 5):
+    def recommend(self, user, data, k_nearest = 3, n_recommendations = 5, cv = False):
         """ Give a list of n_recommendations recommended (book, 
         predicted_rating) based on k_nearest neighbors according to 
         cosine similarity """
@@ -183,10 +217,10 @@ class collaborativeUserBased:
         recommendations = dict()
         
         # Get user ratings
-        userRatings = self.data[user]
+        userRatings = data[user]
         
         # Get nearest users
-        nearest = self.k_nearest(user, k = k_nearest)
+        nearest = self.k_nearest(user, data, k_nearest, cv)
         
         # Compute normalizing factor for weights
         
@@ -204,7 +238,7 @@ class collaborativeUserBased:
             username = nearUser[0]
             
             # Get dictionary of ratings for this user
-            neighborRatings = self.data[username]
+            neighborRatings = data[username]
             
             # Find books rated by nearest users that user didn't
             
@@ -222,21 +256,32 @@ class collaborativeUserBased:
         
         # Sort recommendations
         recommendations.sort(key = lambda titleRating: titleRating[1], reverse = True)
-        
+        if k_nearest < 51:
+            if not recommendations:
+                recommendations = self.recommend(user, data, k_nearest + 1)
+            
+                
+    
         # Return the first n_recommendations
         return recommendations[:n_recommendations]
                     
+###############################################################################
                 
-    def CV(self, k_nearest, n_recommendations, max_users):
+    def CV(self, k_nearest = 3, n_recommendations = 5, max_users = np.infty):
         """ Perform n_folds CV, returning a score that represent the average percentage of successfull recommendations """
+        print("K =", k_nearest, "\nn =", n_recommendations)
         scoreCV = []
         self.backup = copy.deepcopy(self.data)
+        start = time.time()
         # Loop through CV rounds
         for i in np.arange(0, self.n):
+            
+            path = "/Users/paolograniero/Documents/AlgorithmicMethodsOfDataMining/trainData/complete"
+            self.trainSimilarity = json.loads(open(path + str(i) + ".json").read())
             # Create test set
             test = dict()
             train = dict()
-            
+        
             j = 0
         
             # Build train and test set
@@ -255,12 +300,12 @@ class collaborativeUserBased:
                 
             self.data = copy.deepcopy(train)
             
-            # Scoring
+            # Scoringrec
             singleScores = []
             j = len(self.data)
             z = 0
             for user in self.data:
-                recommendations = self.recommend(user, k_nearest, n_recommendations)
+                recommendations = self.recommend(user, self.data, k_nearest, n_recommendations, cv = True)
                 recommendations = [book for (book, rating) in recommendations]
                 
                 bookTestList = [book for (book, rating) in test[user]]
@@ -273,7 +318,7 @@ class collaborativeUserBased:
                 #score = score / min(n_recommendations, len(bookTestList))
                 singleScores.append(score)
                 
-                #print(i, j-z, "\r", end = "")
+                print(i, j-z, round((time.time() - start)/60, 2))
                 z += 1
             scoreCV.append(np.mean(singleScores))
         
@@ -285,7 +330,7 @@ class collaborativeUserBased:
         
     
 rec = collaborativeUserBased(ratings)
-rec.initializeCV()
+#rec.initializeCV()
 #%%
 
 users = [100, 200, 400]
